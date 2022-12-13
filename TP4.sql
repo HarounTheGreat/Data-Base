@@ -13,17 +13,17 @@ create type telephone_vry_type as VARRAY(3) of varchar2(14);
 
 -- b-
 
-create type client_type AS OBJECT(
+create type client_typ AS OBJECT(
 num number(5),
 nom varchar2(30),
 numtel telephone_vry_type)
-create table client of client_type(constraint pk_client primary key(nom));
+create table client of client_typ(constraint pk_client primary key(nom));
 
 -- c- 
 
 create type compte_type AS OBJECT(
 ncompte varchar2(5),solde number(10,2),
-dateOuv date,ref_client ref client_type)
+dateOuv date,ref_client ref client_typ)
 not final
 not instantiable
 
@@ -55,7 +55,7 @@ compte_type(txint number(2,1));
 -- h-
 
 create or replace type mouvement_type AS OBJECT
-(ref_client ref client_type,ref_cpt_courant
+(ref_client ref client_typ,ref_cpt_courant
 ref cptCourant_type,DateOp date,montant number(8,2))
 
 

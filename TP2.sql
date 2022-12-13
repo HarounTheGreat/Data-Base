@@ -4,8 +4,8 @@
 select username from all_users;
 
 -- 2
-
-create profile tp limit
+CREATE PROFILE tp LIMIT IDLE_TIME 60; 
+create profile tp limit FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME UNBOUNDED;
 failed_login_attempts 3;
  create user utp2 identified by tp2 default tablespace users
   password expire
