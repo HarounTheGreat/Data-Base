@@ -530,13 +530,45 @@ insert into client values(5,'mounir abbes','tunis',telephone_vry_type('+21616996
 
 <h1>TD</h1>
 
+**1. Tables**
+
+### Table Client
+
+| NUM | NOM          | ADRESSE   | DateNaiss  |
+| --- | ------------ | --------- | ---------- |
+| 1   | Abidi Dorsaf | Bizerte   | 12/01/1998 |
+| 2   | Brini Sofien | Ben Arous | 29/07/2006 |
+
+### Table Produit
+
+| NUM | DESIGNATION          | PRIX    | STOCK |
+| --- | -------------------- | ------- | ----- |
+| 1   | PC P GAMER ASUS      | 7200.50 | 6     |
+| 2   | PC P GAMER MSI SWORD | 3400.10 | 8     |
+| 3   | MANETTE PS4          | 210.30  | 12    |
+| 4   | CASQUE KONIX         | 75.90   | 23    |
+
+#### LIGNE_FACTURE
+
+| REF_PRODUIT                   | QTE |
+| ----------------------------- | --- |
+| ----------------------------- |
+
+<img src='https://images.all-free-download.com/images/graphicwebp/level_down_alt_arrowhead_shape_icon_6919292.webp' width = 100 />
+
+### Facture
+
+| NUM     | DATEF      | LIGNE_FACTURE | REF_CLIENT |
+| ------- | ---------- | ------------- | ---------- |
+| 0000123 | 05/12/2022 |               | 356746     |
+| 0000124 | 06/12/2022 |               | 356747     |
 
 **2. Réalisez l’implémentation SQL 3 sous Oracle**
 
 ```sql
-CREATE TYPE Produit_type AS OBJECT ( 
+CREATE TYPE Produit_type AS OBJECT (
  num NUMBER(11),
- designation VARCHAR2(120), 
+ designation VARCHAR2(120),
  prix NUMBER(10,2),
  stock NUMBER(10)
 );
@@ -591,13 +623,12 @@ ALTER TABLE nt_lignes_facture
 ADD CONSTRAINT ckqte CHECK (qte > 0);
 ```
 
-
 **3. Réalisez l’implémentation de la méthode age()**
 
 ```sql
 CREATE OR REPLACE TYPE BODY client_type AS MEMBER FUNCTION age RETURN NUMBER IS vage NUMBER;
 
-BEGIN 
+BEGIN
 SELECT ROUND(SYSDATE-c.datenaiss)/360 INTO vage from Client c where c.num=SELF.num;
 RETURN vage;
 END age;
@@ -616,18 +647,17 @@ MEMBER FUNCTION total RETURN NUMBER
  SELECT SUM(lf.qte*lf.REF_produit.prix) INTO vTotal
  FROM THE(select f.lignes_facture from facture f WHERE f.num = SELF.num ) lf ;
  RETURN vTotal;
- END total; 
+ END total;
 END;
 /
 ```
 
-
 **5. Insertion d’objets dans les tables : Insérez les lignes suivantes dans les tables RO**
 
 ```sql
-INSERT INTO Client 
+INSERT INTO Client
 VALUES (1, 'Abidi Dorsaf', 'Bizerte', to_date('12/01/1998', 'DD/MM/YYYY'));
-INSERT INTO Client 
+INSERT INTO Client
 VALUES (2, 'Brini Sofien', 'Ben Arous', to_date('29/07/2006', 'DD/MM/YYYY'));
 ```
 
@@ -638,27 +668,27 @@ INSERT INTO Produit
 VALUES (2, ‘PC P GAMER MSI SWORD’, 3400.10, 8) ;
 INSERT INTO Produit
 VALUES (3, 'MANETTE PS4', 210.3, 12) ;
-INSERT INTO Produit 
+INSERT INTO Produit
 VALUES (4, 'CASQUE KONIX', 75.9, 23) ;
 ```
 
 ```sql
-INSERT INTO Facture 
+INSERT INTO Facture
  VALUES (
  0000123,to_date('05/12/2022', 'DD/MM/YYYY')
  ,LigneFacture_type(typeLigneFacture((select REF(p) from produit p where p.num=2),1),
- typeLigneFacture((select REF(p) from produit p where p.num=3),2)), 
+ typeLigneFacture((select REF(p) from produit p where p.num=3),2)),
  (select REF (cli) from client cli where cli.num=1));
 ```
 
 ```sql
-INSERT INTO Facture 
+INSERT INTO Facture
  VALUES (
  00001234,to_date('06/12/2022', 'DD/MM/YYYY'),
 LigneFacture_type(
  typeLigneFacture((select REF(p) from produit p where p.num=1),1),
  typeLigneFacture((select REF(p) from produit p where p.num=4),1)
-), 
+),
  (select REF (cli) from client cli where cli.num=2));
 /
 ```
@@ -686,7 +716,7 @@ SELECT SUM(lf.qte) AS nombre
 FROM THE(select f.Lignes_facture from facture WHERE f.REF_Client.num = 1) lf;
 ```
 
-**c) Modifier le type facture_type en ajoutant une méthode quantitéT qui calcule le 
+**c) Modifier le type facture_type en ajoutant une méthode quantitéT qui calcule le
 nombre total des produits dans une facture**
 
 ```sql
@@ -700,24 +730,25 @@ CREATE OR REPLACE TYPE BODY Facture_type AS
  SELECT SUM(lf.qte*lf.REF_produit.prix) INTO vTotal
  FROM THE(select f.lignes_facture from facture f WHERE f.num = SELF.num ) lf
  RETURN vTotal;
- END total; 
- ```
+ END total;
+```
 
- ```sql
- MEMBER FUNCTION quantiteT RETURN NUMBER IS
- vQuantite NUMBER; 
- BEGIN
- SELECT SUM(lf.qte) INTO vQuantite 
- FROM THE(select f.lignes_facture from facture f WHERE f.num = SELF.num ) lf; 
- RETURN vQuantite; 
- END quantite; 
+```sql
+MEMBER FUNCTION quantiteT RETURN NUMBER IS
+vQuantite NUMBER;
+BEGIN
+SELECT SUM(lf.qte) INTO vQuantite
+FROM THE(select f.lignes_facture from facture f WHERE f.num = SELF.num ) lf;
+RETURN vQuantite;
+END quantite;
 END;
- ```
+```
 
-**d) Exploiter la méthode quantiteT() afin d’afficher les numéros et noms des clients 
+**d) Exploiter la méthode quantiteT() afin d’afficher les numéros et noms des clients
 ayant payé au moins une facture avec plus de 3 articles**
 
 ```sql
 SELECT DISTINCT f.REF_Client.num, f.REF_Client.nom AS nom
-FROM Facture f 
+FROM Facture f
 WHERE f.quantiteT() > 3;
+```
