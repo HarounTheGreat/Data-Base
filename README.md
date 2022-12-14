@@ -1,6 +1,6 @@
 <h1> Data-Base </h1>
 
-<img src='https://cdn.dribbble.com/users/140720/screenshots/3561570/media/3b784db11fc50a8e507fde70445c5e01.gif' width = 250 />
+<img src='https://cdn.dribbble.com/users/140720/screenshots/3561570/media/3b784db11fc50a8e507fde70445c5e01.gif' />
 
 
 
