@@ -609,19 +609,6 @@ END;
 
 ```sql
 CREATE OR REPLACE TYPE BODY Facture_type AS
-MEMBER FUNCTION Total RETURN NUMBER IS vTotal NUMBER;
-
-BEGIN 
-SELECT SUM(lf.qte*lf.REF_Produit.prix) 
-from THE(select f.lignes_facture from facture f WHERE f.num = SELF.num) lf;
-RETURN vTotal;
-END Total:
-END ;
-/
-```
-
-```sql
-CREATE OR REPLACE TYPE BODY Facture_type AS
 MEMBER FUNCTION total RETURN NUMBER
  IS
  vTotal NUMBER;
